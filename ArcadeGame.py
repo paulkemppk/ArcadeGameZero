@@ -244,12 +244,12 @@ def initgame():
     global quitgame
 
     secondstoSleep = 0.1
-    isOn = 0
+    isON = 0
 
     while True:
 
         if ButtonRed.is_pressed and ButtonBlue.is_pressed:
-            led[isOn].on()
+            led[isON].on()
             secondstoSleep = 0.5
 
             if ButtonRed.is_pressed:
@@ -258,17 +258,17 @@ def initgame():
                 if secondstoSleep < 0.1:
                     secondstoSleep = 0.1
                 if isON > 4:
-                    isOn = 4
-                for i in range(isOn):
+                    isON = 4
+                for i in range(isON):
                     led[i].on
             elif ButtonBlue.is_pressed:
                 isON -= 1
                 secondstoSleep += 0.1
                 if secondstoSleep > 0.5:
                     secondstoSleep = 0.5
-                if isOn < 0:
-                    isOn = 0
-                for i in range(isOn):
+                if isON < 0:
+                    isON = 0
+                for i in range(isON):
                     led[i].off
             if ButtonRed.is_pressed and ButtonBlue.is_pressed:
                 startgame()
