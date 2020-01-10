@@ -1,6 +1,5 @@
 from threading import Thread
-from gpiozero import LED
-from gpiozero import Button
+from gpiozero import LED, Button
 import time
 
 done = False
@@ -8,13 +7,13 @@ done1 = False
 secondstoSleep = False
 quitgame = False
 
-secondsToSleep = 0.05
+
 secondsPause = 2
 
-led = [LED(4), LED(5), LED(6), LED(7), LED(8), LED(9), LED(10), LED(11)]
-ledButton = [LED(12), LED(13)]
-ButtonBlue = Button(2)
-ButtonRed = Button(3)
+led = [LED(13), LED(27), LED(22), LED(5), LED(6), LED(13), LED(26), LED(16)]
+ledButton = [LED(24), LED(25)]
+ButtonBlue = Button(21)
+ButtonRed = Button(20)
 
 # led = ["LED 1", "LED 2", "LED 3", "LED 4", "LED 5", "LED 6", "LED 7", "LED 8"]
 # ledButton = ["LED_BUTTON1", "LED_BUTTON2"]
@@ -80,7 +79,7 @@ class MyThreadLED(Thread):
                         led[4].on()
                         for j in range(10):
                             ledButton[1].on()
-                            secondstoSleep(1)
+                            time.sleep(1)
                             ledButton[1].off()
                         led[0].off()
                         led[1].off()
@@ -92,7 +91,7 @@ class MyThreadLED(Thread):
 
                     for k in range(ScorePlayer1):
                         led[k].on()
-                    secondstoSleep(secondsPause)
+                    time.sleep(secondsPause)
                     for m in range(ScorePlayer1):
                         led[m].off()
                     done = False
@@ -111,7 +110,7 @@ class MyThreadLED(Thread):
 
                         for j in range(10):
                             ledButton[0].on()
-                            secondstoSleep(1)
+                            time.sleep(1)
                             ledButton[0].off()
                         led[7].off()
                         led[6].off()
@@ -123,19 +122,18 @@ class MyThreadLED(Thread):
 
                     for k in range(ScorePlayer1):
                         led[k].on()
-                    secondstoSleep(secondsPause)
+                    time.sleep(secondsPause)
                     for m in range(ScorePlayer1):
                         led[m].off()
                     done1 = False
 
                 elif done or done1:
 
-                    for j in range(5):
-                        led[i].on()
-                        secondstoSleep(0.5)
-                        led[i].off()
-                        secondstoSleep(0.5)
-
+                    for j in range (4):
+                        led[i].off
+                        time.sleep(0.5)
+                        led[i].on
+                        time.sleep(0.5)
                     done = False
                     done1 = False
 
@@ -161,7 +159,7 @@ class MyThreadLED(Thread):
                         led[4].on()
                         for j in range(10):
                             ledButton[1].on()
-                            secondstoSleep(1)
+                            time.sleep(1)
                             ledButton[1].off()
                         led[0].off()
                         led[1].off()
@@ -173,7 +171,7 @@ class MyThreadLED(Thread):
 
                     for k in range(ScorePlayer1):
                         led[k].on()
-                    secondstoSleep(secondsPause)
+                    time.sleep(secondsPause)
                     for m in range(ScorePlayer1):
                         led[m].off()
                     done = False
@@ -192,7 +190,7 @@ class MyThreadLED(Thread):
 
                         for j in range(10):
                             ledButton[0].on()
-                            secondstoSleep(1)
+                            time.sleep(1)
                             ledButton[0].off()
                         led[7].off()
                         led[6].off()
@@ -204,19 +202,18 @@ class MyThreadLED(Thread):
 
                     for k in range(ScorePlayer1):
                         led[k].on()
-                    secondstoSleep(secondsPause)
+                    time.sleep(secondsPause)
                     for m in range(ScorePlayer1):
                         led[m].off()
                     done1 = False
 
                 elif done or done1:
 
-                    for j in range(5):
-                        led[i].on()
-                        secondstoSleep(0.5)
-                        led[i].off()
-                        secondstoSleep(0.5)
-
+                    for j in range (4):
+                        led[i].off
+                        time.sleep(0.5)
+                        led[i].on
+                        time.sleep(0.5)
                     done = False
                     done1 = False
 
@@ -248,7 +245,7 @@ def initgame():
 
     while True:
 
-        if ButtonRed.is_pressed and ButtonBlue.is_pressed:
+        '''if ButtonRed.is_pressed and ButtonBlue.is_pressed:
             led[isON].on()
             secondstoSleep = 0.5
 
@@ -270,8 +267,8 @@ def initgame():
                     isON = 0
                 for i in range(isON):
                     led[i].off
-            if ButtonRed.is_pressed and ButtonBlue.is_pressed:
-                startgame()
+            if ButtonRed.is_pressed and ButtonBlue.is_pressed:'''
+        startgame()
 
 
 
