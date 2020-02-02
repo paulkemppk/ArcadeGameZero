@@ -6,17 +6,17 @@ done = False
 done1 = False
 secondstoSleep = False
 quitgame = False
+quitgame2 = False
+buttonDetect = False
 
+secondsPause = 1
+secondsLedButton = 0.3
+secondsLedButtonWin = 0.3
 
-secondsPause = 2
-
-led = [LED(13), LED(27), LED(22), LED(5), LED(6), LED(13), LED(26), LED(16)]
+led = [LED(17), LED(27), LED(22), LED(5), LED(6), LED(13), LED(26), LED(16)]
 ledButton = [LED(24), LED(25)]
-ButtonBlue = Button(21)
-ButtonRed = Button(20)
-
-# led = ["LED 1", "LED 2", "LED 3", "LED 4", "LED 5", "LED 6", "LED 7", "LED 8"]
-# ledButton = ["LED_BUTTON1", "LED_BUTTON2"]
+ButtonGreen = Button(20)
+ButtonYellow = Button(21)
 
 
 class MyThreadBUTTON(Thread):
@@ -29,21 +29,28 @@ class MyThreadBUTTON(Thread):
         global done
         global done1
         global quitgame
+        global buttonDetect
 
-        while True:
+        time.sleep(2)
 
-            if ButtonBlue.is_pressed:
-                done = True
-            if ButtonRed.is_pressed:
-                done1 = True
-            if ButtonRed.is_pressed and ButtonBlue.is_pressed:
-                time.sleep(10)
-                if ButtonRed.is_pressed and ButtonBlue.is_pressed:
-                    quitgame = True
-                else:
-                    break
+        ButtonGreen.hold_time = 2
+        ButtonYellow.hold_time = 2
 
+        while not buttonDetect:
 
+            if ButtonYellow.is_held and ButtonGreen.is_held:
+                quitgame = True
+                buttonDetect = True
+            elif ButtonGreen.is_pressed and not ButtonGreen.is_held:
+                if not ButtonYellow.is_pressed or not ButtonGreen.is_held:
+                    done = True
+            elif ButtonYellow.is_pressed and not ButtonYellow.is_held:
+                ButtonYellow.hold_time = 0.5
+                if not ButtonGreen.is_pressed or not ButtonYellow.is_held:
+                    done1 = True
+           
+               
+                
 class MyThreadLED(Thread):
 
     def __init__(self):
@@ -55,9 +62,15 @@ class MyThreadLED(Thread):
         global done
         global done1
         global secondstoSleep
+        global quitgame2
 
         ScorePlayer1 = 0
         ScorePlayer2 = 0
+
+        done = False
+        done1 = False
+
+        time.sleep(2)
 
         while not quitgame:
 
@@ -65,215 +78,197 @@ class MyThreadLED(Thread):
 
                 led[i].on()
 
-                #print(led[i] + "on")
-
                 if i == 0 and done:
-                    ScorePlayer1 += 1
 
+                    if secondstoSleep < 0.03:
+                        secondstoSleep = 0.03
+                    else:
+                        secondstoSleep -= 0.01
+
+                    ScorePlayer1 += 1
                     if ScorePlayer1 == 5:
                         ScorePlayer1 = 0
-                        led[0].on()
-                        led[1].on()
-                        led[2].on()
-                        led[3].on()
-                        led[4].on()
+                        ScorePlayer2 = 0
+                        ledButton[1].on()
                         for j in range(10):
-                            ledButton[1].on()
-                            time.sleep(1)
-                            ledButton[1].off()
-                        led[0].off()
-                        led[1].off()
-                        led[2].off()
-                        led[3].off()
-                        led[4].off()
+                            for i in range(8):
+                                led[i].on()
+                            time.sleep(0.5)
+                            for i in range(8):
+                                led[i].off()
+                            time.sleep(0.5)
                         done = False
+                        ledButton[1].off()
+                        secondstoSleep = 0.08
                         break
-
-                    for k in range(ScorePlayer1):
-                        led[k].on()
-                    time.sleep(secondsPause)
-                    for m in range(ScorePlayer1):
-                        led[m].off()
-                    done = False
+                    else:
+                        for k in range(ScorePlayer1):
+                            ledButton[1].on()
+                            time.sleep(secondsLedButton)
+                            ledButton[1].off()
+                            time.sleep(secondsLedButton)
+                        done = False
 
                 elif i == 7 and done1:
 
-                    ScorePlayer2 += 1
+                    if secondstoSleep < 0.03:
+                        secondstoSleep = 0.03
+                    else:
+                        secondstoSleep -= 0.01
 
+                    ScorePlayer2 += 1
                     if ScorePlayer2 == 5:
                         ScorePlayer2 = 0
-                        led[7].on()
-                        led[6].on()
-                        led[5].on()
-                        led[4].on()
-                        led[3].on()
+                        ScorePlayer1 = 0
 
+                        ledButton[0].on()
                         for j in range(10):
-                            ledButton[0].on()
-                            time.sleep(1)
-                            ledButton[0].off()
-                        led[7].off()
-                        led[6].off()
-                        led[5].off()
-                        led[4].off()
-                        led[3].off()
-                        done1 = False
+                            for i in range(8):
+                                led[i].on()
+                            time.sleep(0.5)
+                            for i in range(8):
+                                led[i].off()
+                            time.sleep(0.5)
+                        done = False
+                        ledButton[0].off()
+                        secondstoSleep = 0.08
                         break
-
-                    for k in range(ScorePlayer1):
-                        led[k].on()
-                    time.sleep(secondsPause)
-                    for m in range(ScorePlayer1):
-                        led[m].off()
-                    done1 = False
+                    else:
+                        for k in range(ScorePlayer2):
+                            ledButton[0].on()
+                            time.sleep(secondsLedButton)
+                            ledButton[0].off()
+                            time.sleep(secondsLedButton)
+                        done1 = False
 
                 elif done or done1:
 
-                    for j in range (4):
-                        led[i].off
-                        time.sleep(0.5)
-                        led[i].on
-                        time.sleep(0.5)
+                    time.sleep(secondsPause)
                     done = False
                     done1 = False
 
                 time.sleep(secondstoSleep)
                 led[i].off()
-                #print(led[i] + "off")
 
             for i in range(7, 0, -1):
 
                 led[i].on()
 
-                #print(led[i] + "on")
-
                 if i == 0 and done:
-                    ScorePlayer1 += 1
 
+                    if secondstoSleep < 0.03:
+                        secondstoSleep = 0.03
+                    else:
+                        secondstoSleep -= 0.01
+
+                    ScorePlayer1 += 1
                     if ScorePlayer1 == 5:
                         ScorePlayer1 = 0
-                        led[0].on()
-                        led[1].on()
-                        led[2].on()
-                        led[3].on()
-                        led[4].on()
+                        ScorePlayer2 = 0
+                        
+                        ledButton[1].on()
                         for j in range(10):
-                            ledButton[1].on()
-                            time.sleep(1)
-                            ledButton[1].off()
-                        led[0].off()
-                        led[1].off()
-                        led[2].off()
-                        led[3].off()
-                        led[4].off()
+                            for i in range(8):
+                                led[i].on()
+                            time.sleep(0.5)
+                            for i in range(8):
+                                led[i].off()
+                            time.sleep(0.5)
                         done = False
+                        ledButton[1].off()
+                        secondstoSleep = 0.08
                         break
-
-                    for k in range(ScorePlayer1):
-                        led[k].on()
-                    time.sleep(secondsPause)
-                    for m in range(ScorePlayer1):
-                        led[m].off()
-                    done = False
+                    else:
+                        for k in range(ScorePlayer1):
+                            ledButton[1].on()
+                            time.sleep(secondsLedButton)
+                            ledButton[1].off()
+                            time.sleep(secondsLedButton)
+                        time.sleep(secondsPause)
+                        done = False
 
                 elif i == 7 and done1:
 
-                    ScorePlayer2 += 1
+                    if secondstoSleep < 0.03:
+                        secondstoSleep = 0.03
+                    else:
+                        secondstoSleep -= 0.01
 
+                    ScorePlayer2 += 1
                     if ScorePlayer2 == 5:
                         ScorePlayer2 = 0
-                        led[7].on()
-                        led[6].on()
-                        led[5].on()
-                        led[4].on()
-                        led[3].on()
+                        ScorePlayer1 = 0
 
+                        ledButton[0].on()
                         for j in range(10):
-                            ledButton[0].on()
-                            time.sleep(1)
-                            ledButton[0].off()
-                        led[7].off()
-                        led[6].off()
-                        led[5].off()
-                        led[4].off()
-                        led[3].off()
-                        done1 = False
+                            for i in range(8):
+                                led[i].on()
+                            time.sleep(0.5)
+                            for i in range(8):
+                                led[i].off()
+                            time.sleep(0.5)
+                        done = False
+                        ledButton[0].off()
+                        secondstoSleep = 0.08
                         break
-
-                    for k in range(ScorePlayer1):
-                        led[k].on()
-                    time.sleep(secondsPause)
-                    for m in range(ScorePlayer1):
-                        led[m].off()
-                    done1 = False
+                    else:
+                        for k in range(ScorePlayer2):
+                            ledButton[0].on()
+                            time.sleep(secondsLedButton)
+                            ledButton[0].off()
+                            time.sleep(secondsLedButton)
+                        time.sleep(secondsPause)
+                        done1 = False
 
                 elif done or done1:
-
-                    for j in range (4):
-                        led[i].off
-                        time.sleep(0.5)
-                        led[i].on
-                        time.sleep(0.5)
+                   
+                    time.sleep(secondsPause)
                     done = False
                     done1 = False
 
                 time.sleep(secondstoSleep)
                 led[i].off()
-                #print(led[i] + "off")
         initgame()
 
 
 def startgame():
     myThreadOb2 = MyThreadBUTTON()
-
     myThreadOb3 = MyThreadLED()
 
     myThreadOb2.start()
     myThreadOb3.start()
-
-    myThreadOb2.join()
-    myThreadOb3.join()
+   
 
 
 def initgame():
 
     global secondstoSleep
     global quitgame
+    global buttonDetect
 
-    secondstoSleep = 0.1
-    isON = 0
+    secondstoSleep = 0.08
+
+    quitgame = False
 
     while True:
 
-        '''if ButtonRed.is_pressed and ButtonBlue.is_pressed:
-            led[isON].on()
-            secondstoSleep = 0.5
-
-            if ButtonRed.is_pressed:
-                isON += 1
-                secondstoSleep -= 0.1
-                if secondstoSleep < 0.1:
-                    secondstoSleep = 0.1
-                if isON > 4:
-                    isON = 4
-                for i in range(isON):
-                    led[i].on
-            elif ButtonBlue.is_pressed:
-                isON -= 1
-                secondstoSleep += 0.1
-                if secondstoSleep > 0.5:
-                    secondstoSleep = 0.5
-                if isON < 0:
-                    isON = 0
-                for i in range(isON):
-                    led[i].off
-            if ButtonRed.is_pressed and ButtonBlue.is_pressed:'''
-        startgame()
-
-
+        for i in range(8):
+            led[i].on()
+        time.sleep(0.5)
+        for i in range(8):
+            led[i].off()
+        time.sleep(0.5)
+        
+    
+        if ButtonYellow.is_held and ButtonGreen.is_held:
+            buttonDetect = False
+            break
+    
+    
+    startgame()
+        
 
 # Run following code when the program starts
 if __name__ == '__main__':
 
     initgame()
-    print('Main Terminating...')
